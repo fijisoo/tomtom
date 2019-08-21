@@ -128,18 +128,16 @@ export class AppComponent implements OnInit{
 
   sortTableAlphabetically (tab: any, getName: any, getChildren: any) {
     if (Array.isArray(tab) && tab.length) {
-      tab = orderBy(tab, (el) => el.name);
+      tab = orderBy(tab, (el) => getName(el));
       tab.map(el => {
         if ((Array.isArray(getChildren(el))) && getChildren(el).length) {
-          el.children = orderBy(el.children, (nestedEl) => nestedEl.name);
+          el.children = orderBy(getChildren(el), (nestedEl) => getName(nestedEl));
           this.sortTableAlphabetically(getChildren(el), getName, getChildren);
         }
       });
     }
     return tab;
   }
-
-
 
 // użycie:
   /* sortTableAlphabetically<Group>(groups, (x: any) => x.name, (x: any) => x.children); */
