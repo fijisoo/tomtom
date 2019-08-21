@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {orderBy} from 'lodash';
 
 @Component({
   selector: 'app-root',
@@ -125,27 +126,17 @@ export class AppComponent implements OnInit{
     console.log(newTab);
   }
 
-  sortTableAlphabetically (tab: any, sortBy: any, nestedNode: any) {
+  sortTableAlphabetically (tab: any, getName: any, getChildren: any) {
     if (Array.isArray(tab) && tab.length) {
-      tab.sort(this.compareValues(sortBy));
-      // tab = orderBy(tab, sortBy);
+      tab = orderBy(tab, (el) => el.name);
       tab.map(el => {
-        if ((Array.isArray(nestedNode(el))) && nestedNode(el).length) {
-          this.sortTableAlphabetically(nestedNode(el), sortBy, nestedNode);
+        if ((Array.isArray(getChildren(el))) && getChildren(el).length) {
+          el.children = orderBy(el.children, (nestedEl) => nestedEl.name);
+          this.sortTableAlphabetically(getChildren(el), getName, getChildren);
         }
       });
-      return tab;
     }
     return tab;
-  }
-
-  compareValues(value: any) {
-    return function(a: any, b: any): number {
-      function getValue (val) {
-        return value(val).toString().toUpperCase();
-      }
-      return getValue(a).localeCompare(getValue(b));
-    };
   }
 
 
