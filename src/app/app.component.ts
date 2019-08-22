@@ -6,7 +6,7 @@ import {orderBy} from 'lodash';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'tomtom';
   tab = [
     {
@@ -122,18 +122,19 @@ export class AppComponent implements OnInit{
   ];
 
   ngOnInit() {
-    const newTab = this.sortTableAlphabetically(this.tab, (x) => x.name, (x) => x.children, 'children');
+    const newTab = this.sortTableAlphabetically(this.tab, (x) => x.name, (x) => x.children);
     console.log(newTab);
   }
 
-  sortTableAlphabetically(tab: any[], sortBy: (x: any) => number | string, nestedNode: (x: any) => [number | string], selector) {
+  sortTableAlphabetically(tab: any[], sortBy: (x: any) => number | string, nestedNode: (x: any) => [number | string]) {
 
     let array: any[];
     array = orderBy(tab, sortBy);
     array = array.map(el => {
-        const x = { ...el };
-        x[selector] = this.sortTableAlphabetically(nestedNode(el), sortBy, nestedNode, selector);
-        return x;
+        return ((x: any) => {
+          el.x = this.sortTableAlphabetically(nestedNode(el), sortBy, nestedNode);
+          return el;
+        })(nestedNode(el))
       }
     );
     return array;
