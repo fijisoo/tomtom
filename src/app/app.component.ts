@@ -122,21 +122,21 @@ export class AppComponent implements OnInit{
   ];
 
   ngOnInit() {
-    const newTab = this.sortTableAlphabetically(this.tab, (x) => x.name, (x) => x.children);
+    const newTab = this.sortTableAlphabetically(this.tab, (x) => x.name, (x) => x.children, 'children');
     console.log(newTab);
   }
 
-  sortTableAlphabetically (tab: any, getName: any, getChildren: any) {
-    if (Array.isArray(tab) && tab.length) {
-      tab = orderBy(tab, (el) => getName(el));
-      tab.map(({children}) => {
-        if ((Array.isArray(children)) && children.length) {
-          children = orderBy(children, (nestedEl) => getName(nestedEl));
-          this.sortTableAlphabetically(children, getName, getChildren);
-        }
-      });
-    }
-    return tab;
+  sortTableAlphabetically(tab: any[], sortBy: (x: any) => number | string, nestedNode: (x: any) => [number | string], selector) {
+
+    let array: any[];
+    array = orderBy(tab, sortBy);
+    array = array.map(el => {
+        const x = { ...el };
+        x[selector] = this.sortTableAlphabetically(nestedNode(el), sortBy, nestedNode, selector);
+        return x;
+      }
+    );
+    return array;
   }
 
 // użycie:
