@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {orderBy} from 'lodash';
+import {orderBy, findKey} from 'lodash';
 
 @Component({
   selector: 'app-root',
@@ -127,17 +127,13 @@ export class AppComponent implements OnInit {
   }
 
   sortTableAlphabetically(tab: any[], sortBy: (x: any) => number | string, nestedNode: (x: any) => [number | string]) {
-
-    let array: any[];
-    array = orderBy(tab, sortBy);
-    array = array.map(el => {
-        return ((x: any) => {
-          el.x = this.sortTableAlphabetically(nestedNode(el), sortBy, nestedNode);
-          return el;
-        })(nestedNode(el))
+    tab = orderBy(tab, sortBy);
+    tab.map(el => {
+        const key = Object.keys(el).find(key => el[key] === nestedNode(el));
+        return el[key] = this.sortTableAlphabetically(nestedNode(el), sortBy, nestedNode);
       }
     );
-    return array;
+    return tab;
   }
 
 // użycie:
