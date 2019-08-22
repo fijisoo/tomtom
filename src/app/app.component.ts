@@ -13,9 +13,28 @@ export class AppComponent implements OnInit {
       id: '235-231',
       name: 'Basia',
       level: 0,
-      children: [{
+      children: [
+        {
         id: '534-23w',
         name: 'Wacek',
+        level: 1,
+        children: [{
+          id: '134-23w',
+          name: 'Zmalal',
+          level: 2,
+          children: []
+        },
+          {
+            id: '3gg-222',
+            name: 'Urus',
+            level: 2,
+            children: []
+          }
+        ]
+      },
+        {
+        id: '3123123123',
+        name: 'w3cek',
         level: 1,
         children: [{
           id: '134-23w',
@@ -122,12 +141,14 @@ export class AppComponent implements OnInit {
   ];
 
   ngOnInit() {
+    console.time();
     const newTab = this.sortTableAlphabetically(this.tab, (x) => x.name, (x) => x.children);
+    console.timeEnd();
     console.log(newTab);
   }
 
   sortTableAlphabetically(tab: any[], sortBy: (x: any) => number | string, nestedNode: (x: any) => [number | string]) {
-    tab = orderBy(tab, sortBy);
+    tab = orderBy(tab, (e) => sortBy(e).toString().toLowerCase());
     tab.map(el => {
         const key = Object.keys(el).find(key => el[key] === nestedNode(el));
         return el[key] = this.sortTableAlphabetically(nestedNode(el), sortBy, nestedNode);
